@@ -8,53 +8,32 @@ var path = require('path');
 describe('view-engine' , function() {
 
     beforeEach(function(done) {
-        for (var k in require.cache) {
-            if (require.cache.hasOwnProperty(k)) {
-                delete require.cache[k];
-            }
-        }
-
-        require('raptor-promises').enableLongStacks();
-
-        require('raptor-logging').configureLoggers({
-            'raptor-optimizer': 'WARN'
-        });
+        // for (var k in require.cache) {
+        //     if (require.cache.hasOwnProperty(k)) {
+        //         delete require.cache[k];
+        //     }
+        // }
 
         done();
     });
 
-    it('should render a simple template to a stream', function(done) {
+    it('should render a raptor template with a callback', function(done) {
         var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-raptor': {
+                    extensions: ['rhtml']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
 
-        var template = viewEngine
-            .loader(module)
-            .require('./templates/hello-dust');
+        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
 
-
-        var output = '';
-
-        template.stream({
-                name: 'John'
-            })
-            .on('data', function(data) {
-                output += data;
-            })
-            .on('end', function() {
-                expect(output).to.equal('Hello John');
-                done();
-            })
-            .on('error', done);
-    });
-
-    it('should render a simple template with a callback', function(done) {
-        var viewEngine = require('../');
-
-        var template = viewEngine
-            .loader(module)
-            .require('./templates/hello-dust');
-
-
-        template.render({
+        template.render(
+            {
                 name: 'John'
             },
             function(err, data) {
@@ -62,9 +41,149 @@ describe('view-engine' , function() {
                     done(err);
                 }
 
-                expect(data).to.equal('Hello John');
+                expect(data).to.equal('Hello John!');
                 done();
             });
+    });
+
+    it('should render a template to a stream', function(done) {
+        var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-raptor': {
+                    extensions: ['rhtml']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
+
+        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
+        var output = '';
+        template.stream({
+                name: 'John'
+            })
+            .on('data', function(data) {
+                output += data;
+            })
+            .on('end', function() {
+                expect(output).to.equal('Hello John!');
+                done();
+            })
+            .on('error', done);
+    });
+
+    
+
+    it('should render a raptor template to a render context', function(done) {
+        var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-raptor': {
+                    extensions: ['rhtml']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
+
+        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
+        var context = viewEngine.createRenderContext();
+        template.render({
+                name: 'John'
+            }, context)
+            .on('end', function() {
+                expect(context.getOutput()).to.equal('Hello John!');
+                done();
+            })
+            .on('error', done);
+    });
+
+    // Dust:
+    it('should render a Dust template with a callback', function(done) {
+        var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-raptor': {
+                    extensions: ['rhtml']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
+
+        var template = viewEngine.load(require.resolve('./templates/hello.dust'));
+
+        template.render(
+            {
+                name: 'John'
+            },
+            function(err, data) {
+                if (err) {
+                    done(err);
+                }
+
+                expect(data).to.equal('Hello John!');
+                done();
+            });
+    });
+
+    it('should render a Dust template to a stream', function(done) {
+        var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-raptor': {
+                    extensions: ['rhtml']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
+
+        var template = viewEngine.load(require.resolve('./templates/hello.dust'));
+        var output = '';
+        template.stream({
+                name: 'John'
+            })
+            .on('data', function(data) {
+                output += data;
+            })
+            .on('end', function() {
+                expect(output).to.equal('Hello John!');
+                done();
+            })
+            .on('error', done);
+    });
+
+    
+
+    it('should render a Dust template to a render context', function(done) {
+        var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-raptor': {
+                    extensions: ['rhtml']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
+
+        var template = viewEngine.load(require.resolve('./templates/hello.dust'));
+        var context = viewEngine.createRenderContext();
+        template.render({
+                name: 'John'
+            }, context)
+            .on('end', function() {
+                expect(context.getOutput()).to.equal('Hello John!');
+                done();
+            })
+            .on('error', done);
     });
 });
 
