@@ -222,17 +222,17 @@ module.exports = function render(input, context) {
 
 _Using Raptor Templates:_
 ```javascript
-var raptorTemplate = viewEngine.load(require.resolve('./foo.rhtml'));
+var template = viewEngine.load(require.resolve('./foo.rhtml'));
 module.exports = function render(input, context) {
-    raptorTemplate.render({ name: input.name }, context);
+    template.render({ name: input.name }, context);
 }
 ```
 
 _Using Dust:_
 ```javascript
-var dustTemplate = viewEngine.load(require.resolve('./bar.dust'));
+var template = viewEngine.load(require.resolve('./bar.dust'));
 module.exports = function render(input, context) {
-    dustTemplate.render({ name: input.name }, context);
+    template.render({ name: input.name }, context);
 }
 ```
 
