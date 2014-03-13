@@ -177,7 +177,7 @@ module.exports = function create(config) {
 }
 ```
 
-The object returned by the factory function can contain any of the following method:
+The object returned by the factory function can contain any of the following methods:
 
 * `load(path) : <Object>` (optional)
 * One or more of the following rendering methods:
