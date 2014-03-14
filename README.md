@@ -169,7 +169,7 @@ If you create your own, please send a Pull Request so that it will show up on th
 
 ## Creating Your Own View Engine
 
-Each view engine provider is a module that that exports a factory function as shown below:
+Each view engine provider is a module that exports a factory function as shown below:
 
 ```javascript
 module.exports = function create(config) {
