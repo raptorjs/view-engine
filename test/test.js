@@ -98,7 +98,8 @@ describe('view-engine' , function() {
                 expect(context.getOutput()).to.equal('Hello John!');
                 done();
             })
-            .on('error', done);
+            .on('error', done)
+            .end();
     });
 
     // Dust:
@@ -183,7 +184,7 @@ describe('view-engine' , function() {
                 expect(context.getOutput()).to.equal('Hello John!');
                 done();
             })
-            .on('error', done);
+            .end();
     });
 });
 

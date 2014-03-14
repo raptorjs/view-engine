@@ -117,14 +117,12 @@ var through = require('through');
 
 var out = through();
 var context = viewEngine.createRenderContext(out /* underlying writer/stream */);
-context.beginRender();
-
 fooTemplate.render({
         name: 'John Doe'
     },
     context);
 
-context.beginAsyncFragment(function(asyncContext, asyncFragment) {
+context.beginAsync(function(asyncContext, asyncFragment) {
     setTimeout(function() {
         asyncContext.write('Hello World Async');
         asyncFragment.end();
@@ -138,10 +136,11 @@ barTemplate.render({
     },
     context);
 
-context.endRender();
-
 context.on('end', function() {
     /*
+    This callback will be invoked when all of the async rendering has
+    completed.
+    
     The output is written to the underlying writer/stream. For this
     example, the order of the output will be the following:
     1) Output of rendering fooTemplate
@@ -150,6 +149,8 @@ context.on('end', function() {
     4) Output of rendering barTemplate
     */
 });
+
+context.end();
 ```
 
 The [render context object](https://github.com/raptorjs3/raptor-render-context) does the hard work of ensuring that the output of each fragment is flushed out in the correct order. Content that is rendered before it is ready to be flushed is buffered and immediately flushed as soon it is ready.
@@ -240,14 +241,15 @@ With this approach, a UI component can even render its output asynchronously. Fo
 ```javascript
 var request = require('request');
 module.exports = function render(input, context) {
-    context.beginAsyncFragment(function(asyncContext, asyncFragment) {
+    context.beginAsync(function(asyncContext, done()) {
         request('http://foo.com/some/service', function (error, response, body) {
             if (error) {
-                asyncFragment.end(error);
+                done(error);
+                return
             }
 
             asyncContext.write(body); // Just write out the response verbatim...
-            asyncFragment.end();
+            done();
         });
     });
 }
