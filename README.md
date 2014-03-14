@@ -25,9 +25,9 @@ npm install view-engine
 
 You will then need to install additional modules to use your favorite templating language. For example:
 
-* Raptor Templates:
+* [Raptor Templates](https://github.com/raptorjs3/raptor-templates):
   `npm install view-engine-raptor`
-* Dust:
+* [Dust](https://github.com/linkedin/dustjs):
   `npm install view-engine-dust`
 
 # Usage
@@ -59,13 +59,13 @@ var template = require('view-engine').load(require.resolve('./hello.rhtml'));
 template.render({
         name: 'John Doe'
     },
-    function(err, data) {
+    function(err, output) {
         if (err) {
             console.error('Failed to render template: ' + e);
             return;
         }
 
-        console.log(data);
+        console.log(output);
     })
 ```
 
@@ -160,8 +160,8 @@ The [render context object](https://github.com/raptorjs3/raptor-render-context) 
 
 Below is a list of available view engines:
 
-* Dust: [view-engine-dust](https://github.com/patrick-steele-idem/view-engine-dust)
-* Raptor Templates: [view-engine-raptor](https://github.com/patrick-steele-idem/view-engine-raptor)
+* [Dust](https://github.com/linkedin/dustjs): [view-engine-dust](https://github.com/patrick-steele-idem/view-engine-dust)
+* [Raptor Templates](https://github.com/raptorjs3/raptor-templates): [view-engine-raptor](https://github.com/patrick-steele-idem/view-engine-raptor)
 
 If you create your own, please send a Pull Request so that it will show up on this page. Also, don't forget to tag your module with `view-engine` so that users can find it in `npm`.
 
