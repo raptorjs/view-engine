@@ -34,7 +34,7 @@ You will then need to install additional modules to use your favorite templating
 
 ## Configuration
 
-Associate file extensions with a view engine:
+Associate file extensions with a view engines:
 ```javascript
 require('view-engine').configure({
     engines: {
@@ -51,6 +51,23 @@ require('view-engine').configure({
 ```
 
 ## Template Rendering
+
+### Render with a Callback
+```javascript
+var template = require('view-engine').load(require.resolve('./hello.rhtml'));
+
+template.render({
+        name: 'John Doe'
+    },
+    function(err, data) {
+        if (err) {
+            console.error('Failed to render template: ' + e);
+            return;
+        }
+
+        console.log(data);
+    })
+```
 
 ### Render to a Stream
 ```javascript
@@ -77,23 +94,6 @@ app.get('/test', function(req, res) {
 })
 ```
 
-### Render with an Output Callback
-```javascript
-var template = require('view-engine').load(require.resolve('./hello.rhtml'));
-
-template.render({
-        name: 'John Doe'
-    },
-    function(err, data) {
-        if (err) {
-            console.error('Failed to render template: ' + e);
-            return;
-        }
-
-        console.log(data);
-    })
-```
-
 ### Render to an Existing Render Context
 
 It's also possible render a template to a previously created render context that supports asynchronous rendering (described more later):
@@ -116,7 +116,8 @@ var barTemplate = viewEngine.load(require.resolve('./bar.rhtml'));
 var through = require('through');
 
 var out = through();
-var context = viewEngine.createRenderContext(out /* underlying writer/stream */);
+var context = viewEngine.createRenderContext(out /* underlying writer or stream */);
+
 fooTemplate.render({
         name: 'John Doe'
     },
@@ -138,11 +139,11 @@ barTemplate.render({
 
 context.on('end', function() {
     /*
-    This callback will be invoked when all of the async rendering has
-    completed.
-    
-    The output is written to the underlying writer/stream. For this
-    example, the order of the output will be the following:
+    This callback will be invoked when all of the async rendering has completed.
+
+    The output is written to the underlying writer/stream. For this example, the
+    order of the output will be the following:
+
     1) Output of rendering fooTemplate
     2) "Hello World Async"
     3) "Hello World"
@@ -241,7 +242,7 @@ With this approach, a UI component can even render its output asynchronously. Fo
 ```javascript
 var request = require('request');
 module.exports = function render(input, context) {
-    context.beginAsync(function(asyncContext, done()) {
+    context.beginAsync(function(asyncContext, done) {
         request('http://foo.com/some/service', function (error, response, body) {
             if (error) {
                 done(error);
