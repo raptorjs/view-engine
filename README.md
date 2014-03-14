@@ -123,12 +123,11 @@ fooTemplate.render({
     },
     context);
 
-context.beginAsync(function(asyncContext, asyncFragment) {
-    setTimeout(function() {
-        asyncContext.write('Hello World Async');
-        asyncFragment.end();
-    }, 1000);
-});
+var asyncContext = context.beginAsync();
+setTimeout(function() {
+    asyncContext.write('Hello World Async');
+    asyncContext.end();
+}, 1000);
 
 context.write('Hello World')
 
@@ -242,16 +241,15 @@ With this approach, a UI component can even render its output asynchronously. Fo
 ```javascript
 var request = require('request');
 module.exports = function render(input, context) {
-    context.beginAsync(function(asyncContext, done) {
-        request('http://foo.com/some/service', function (error, response, body) {
-            if (error) {
-                done(error);
-                return
-            }
+    var asyncContext = context.beginAsync();
+    request('http://foo.com/some/service', function (error, response, body) {
+        if (error) {
+            asyncContext.error(error);
+            return
+        }
 
-            asyncContext.write(body); // Just write out the response verbatim...
-            done();
-        });
+        asyncContext.write(body); // Just write out the response verbatim...
+        asyncContext.end();
     });
 }
 ```
