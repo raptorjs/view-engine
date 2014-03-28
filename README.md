@@ -38,7 +38,7 @@ Associate file extensions with a view engines:
 ```javascript
 require('view-engine').configure({
     engines: {
-        'view-engine-rhtml': {
+        'view-engine-raptor': {
             extensions: ['rhtml']
             // Any additional config...
         },
