@@ -7,3 +7,5 @@
 *.orig
 .DS_Store
 coverage
+*.rhtml.js
+*.dust.js
