@@ -35,5 +35,5 @@
         "mocha": "^1.15.1",
         "jshint": "^2.3.0"
     },
-    "version": "0.1.5-beta"
+    "version": "0.1.6-beta"
 }
