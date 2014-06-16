@@ -34,7 +34,8 @@ You will then need to install additional modules to use your favorite templating
 
 ## Configuration
 
-Associate file extensions with a view engines:
+Configuration via a JavaScript object:
+
 ```javascript
 require('view-engine').configure({
     engines: {
@@ -50,11 +51,21 @@ require('view-engine').configure({
 })
 ```
 
+Configuration via JavaScript code:
+
+```javascript
+var viewEngine = require('view-engine');
+viewEngine.register('rhtml', require('view-engine-raptor'));
+viewEngine.register('dust', require('view-engine-dust'));
+```
+
 ## Template Rendering
 
 ### Render with a Callback
+
 ```javascript
-var template = require('view-engine').load(require.resolve('./hello.rhtml'));
+var templatePath = require.resolve('./hello.rhtml');
+var template = require('view-engine').load(templatePath);
 
 template.render({
         name: 'John Doe'
@@ -70,8 +81,10 @@ template.render({
 ```
 
 ### Render to a Stream
+
 ```javascript
-var template = require('view-engine').load(require.resolve('./hello.rhtml'));
+var templatePath = require.resolve('./hello.rhtml');
+var template = require('view-engine').load(templatePath);
 
 template.stream({
         name: 'John Doe'
@@ -84,7 +97,8 @@ NOTE: The template file extension is required in order to determine which view e
 Piping out to a response as part of Express middleware:
 
 ```javascript
-var template = require('view-engine').load(require.resolve('./hello.rhtml'));
+var templatePath = require.resolve('./hello.rhtml');
+var template = require('view-engine').load(templatePath);
 
 app.get('/test', function(req, res) {
     template.stream({
@@ -97,8 +111,10 @@ app.get('/test', function(req, res) {
 ### Render to an Existing Render Context
 
 It's also possible render a template to a previously created render context that supports asynchronous rendering (described more later):
+
 ```javascript
-var template = require('view-engine').load(require.resolve('./hello.rhtml'));
+var templatePath = require.resolve('./hello.rhtml');
+var template = require('view-engine').load(templatePath);
 
 template.render({
         name: 'John Doe'
@@ -215,6 +231,7 @@ module.exports = function render(input, context) {
 The UI component can then be implemented using any supported templating engine or no templating engine at all:
 
 _Using no templating engine:_
+
 ```javascript
 module.exports = function render(input, context) {
     context.write('Hello ' + input.name + '!');
@@ -222,6 +239,7 @@ module.exports = function render(input, context) {
 ```
 
 _Using Raptor Templates:_
+
 ```javascript
 var template = viewEngine.load(require.resolve('./foo.rhtml'));
 module.exports = function render(input, context) {
@@ -230,6 +248,7 @@ module.exports = function render(input, context) {
 ```
 
 _Using Dust:_
+
 ```javascript
 var template = viewEngine.load(require.resolve('./bar.dust'));
 module.exports = function render(input, context) {
@@ -238,6 +257,7 @@ module.exports = function render(input, context) {
 ```
 
 With this approach, a UI component can even render its output asynchronously. For example:
+
 ```javascript
 var request = require('request');
 module.exports = function render(input, context) {
@@ -254,9 +274,8 @@ module.exports = function render(input, context) {
 }
 ```
 
-
-
 ## Comparison to Consolidate.js
+
 The [consolidate](https://github.com/visionmedia/consolidate.js/) module is a template consolidation engine that only works on the server and is designed to only work with Express. In addition, it only supports the less efficient callback-style rendering which means that an HTML string will only start to be flushed out to the client after the entire output is generated and stored in memory.
 
 In comparision, the `view-engine` module works on both the server and the client and it is not tied to any one framework. In addition, it supports very efficient asynchronous rendering and streaming.
