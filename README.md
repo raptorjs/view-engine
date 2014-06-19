@@ -108,6 +108,21 @@ app.get('/test', function(req, res) {
 })
 ```
 
+Alternatively, you can render directly to an existing stream to avoid creating an intermediate stream:
+
+```javascript
+var templatePath = require.resolve('./hello.rhtml');
+var template = require('view-engine').load(templatePath);
+
+app.get('/test', function(req, res) {
+    template.render({
+            name: 'John Doe'
+        }, res); 
+})
+```
+
+_NOTE:_ This will end the target output stream.
+
 ### Render to an Existing Render Context
 
 It's also possible render a template to a previously created render context that supports asynchronous rendering (described more later):

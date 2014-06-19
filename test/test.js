@@ -46,7 +46,7 @@ describe('view-engine' , function() {
             });
     });
 
-    it('should render a template to a stream', function(done) {
+    it('should create a stream that can be piped', function(done) {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
@@ -71,6 +71,37 @@ describe('view-engine' , function() {
                 expect(output).to.equal('Hello John!');
                 done();
             })
+            .on('error', done);
+    });
+
+    it('should render a template to an existing stream', function(done) {
+        var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-raptor': {
+                    extensions: ['rhtml']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
+
+        var output = '';
+        var outStream = require('through')(
+            function write(data) {
+                output += data;
+            },
+            function end() {
+                expect(output).to.equal('Hello John!');
+                done();
+            }
+        );
+
+        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
+        template.render({
+                name: 'John'
+            }, outStream)
             .on('error', done);
     });
 
