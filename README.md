@@ -4,7 +4,7 @@ view-engine
 The `view-engine` module provides a small abstraction layer to make it easier to work with multiple templating languages on both the server and the browser. This module provides the following benefits:
 
 * Browser and Server Support
-    - Browser-support requires using a Node.js module bundler such as [raptor-optimizer](https://github.com/raptorjs3/raptor-optimizer) or [browserify](https://github.com/substack/node-browserify)
+    - Browser-support requires using a Node.js module bundler such as [RaptorJS Optimizer](https://github.com/raptorjs3/optimizer) or [browserify](https://github.com/substack/node-browserify)
 * Normalized Rendering API
 * Multiple Rendering Styles
     - Callbacks
@@ -25,8 +25,8 @@ npm install view-engine
 
 You will then need to install additional modules to use your favorite templating language. For example:
 
-* [Raptor Templates](https://github.com/raptorjs3/raptor-templates):
-  `npm install view-engine-raptor`
+* [Marko](https://github.com/raptorjs3/marko):
+  `npm install view-engine-marko`
 * [Dust](https://github.com/linkedin/dustjs):
   `npm install view-engine-dust`
 
@@ -34,28 +34,11 @@ You will then need to install additional modules to use your favorite templating
 
 ## Configuration
 
-Configuration via a JavaScript object:
-
-```javascript
-require('view-engine').configure({
-    engines: {
-        'view-engine-raptor': {
-            extensions: ['rhtml']
-            // Any additional config...
-        },
-        'view-engine-dust': {
-            extensions: ['dust']
-            // Any additional config...
-        }
-    }
-})
-```
-
-Configuration via JavaScript code:
+Registering view engines:
 
 ```javascript
 var viewEngine = require('view-engine');
-viewEngine.register('rhtml', require('view-engine-raptor'));
+viewEngine.register('marko', require('view-engine-marko'));
 viewEngine.register('dust', require('view-engine-dust'));
 ```
 
@@ -64,7 +47,7 @@ viewEngine.register('dust', require('view-engine-dust'));
 ### Render with a Callback
 
 ```javascript
-var templatePath = require.resolve('./hello.rhtml');
+var templatePath = require.resolve('./hello.marko');
 var template = require('view-engine').load(templatePath);
 
 template.render({
@@ -83,7 +66,7 @@ template.render({
 ### Render to a Stream
 
 ```javascript
-var templatePath = require.resolve('./hello.rhtml');
+var templatePath = require.resolve('./hello.marko');
 var template = require('view-engine').load(templatePath);
 
 template.stream({
@@ -97,7 +80,7 @@ NOTE: The template file extension is required in order to determine which view e
 Piping out to a response as part of Express middleware:
 
 ```javascript
-var templatePath = require.resolve('./hello.rhtml');
+var templatePath = require.resolve('./hello.marko');
 var template = require('view-engine').load(templatePath);
 
 app.get('/test', function(req, res) {
@@ -111,29 +94,29 @@ app.get('/test', function(req, res) {
 Alternatively, you can render directly to an existing stream to avoid creating an intermediate stream:
 
 ```javascript
-var templatePath = require.resolve('./hello.rhtml');
+var templatePath = require.resolve('./hello.marko');
 var template = require('view-engine').load(templatePath);
 
 app.get('/test', function(req, res) {
     template.render({
             name: 'John Doe'
-        }, res); 
+        }, res);
 })
 ```
 
 _NOTE:_ This will end the target output stream.
 
-### Render to an Existing Render Context
+### Render to an Existing Async Writer
 
-It's also possible render a template to a previously created render context that supports asynchronous rendering (described more later):
+It's also possible render a template to a previously created async writer that supports asynchronous rendering (described more later):
 
 ```javascript
-var templatePath = require.resolve('./hello.rhtml');
+var templatePath = require.resolve('./hello.marko');
 var template = require('view-engine').load(templatePath);
 
 template.render({
         name: 'John Doe'
-    }, context);
+    }, out);
 ```
 
 #### Asynchronous Rendering
@@ -143,31 +126,31 @@ The `view-engine` module supports rendering output asynchronously to an output s
 ```javascript
 var viewEngine = require('view-engine');
 var fooTemplate = viewEngine.load(require.resolve('./foo.dust'));
-var barTemplate = viewEngine.load(require.resolve('./bar.rhtml'));
+var barTemplate = viewEngine.load(require.resolve('./bar.marko'));
 var through = require('through');
 
-var out = through();
-var context = viewEngine.createRenderContext(out /* underlying writer or stream */);
+var stream = through();
+var out = viewEngine.createWriter(stream /* underlying writer or stream */);
 
 fooTemplate.render({
         name: 'John Doe'
     },
-    context);
+    out);
 
-var asyncContext = context.beginAsync();
+var asyncOut = out.beginAsync();
 setTimeout(function() {
-    asyncContext.write('Hello World Async');
-    asyncContext.end();
+    asyncOut.write('Hello World Async');
+    asyncOut.end();
 }, 1000);
 
-context.write('Hello World')
+out.write('Hello World')
 
 barTemplate.render({
         message: 'Hello World'
     },
-    context);
+    out);
 
-context.on('end', function() {
+out.on('end', function() {
     /*
     This callback will be invoked when all of the async rendering has completed.
 
@@ -181,17 +164,18 @@ context.on('end', function() {
     */
 });
 
-context.end();
+out.end();
 ```
 
-The [render context object](https://github.com/raptorjs3/raptor-render-context) does the hard work of ensuring that the output of each fragment is flushed out in the correct order. Content that is rendered before it is ready to be flushed is buffered and immediately flushed as soon it is ready.
+The [async writer](https://github.com/raptorjs3/async-writer) module does the hard work of ensuring that the output of each fragment is flushed out in the correct order. Content that is rendered before it is ready to be flushed is buffered and immediately flushed as soon it is ready.
 
 # Available View Engines
 
 Below is a list of available view engines:
 
 * [Dust](https://github.com/linkedin/dustjs): [view-engine-dust](https://github.com/patrick-steele-idem/view-engine-dust)
-* [Raptor Templates](https://github.com/raptorjs3/raptor-templates): [view-engine-raptor](https://github.com/patrick-steele-idem/view-engine-raptor)
+* [Handlebars](https://github.com/wycats/handlebars.js): [view-engine-handlebars](https://github.com/patrick-steele-idem/view-engine-handlebars)
+* [Marko](https://github.com/raptorjs3/marko): [view-engine-marko](https://github.com/patrick-steele-idem/view-engine-marko)
 
 If you create your own, please send a Pull Request so that it will show up on this page. Also, don't forget to tag your module with `view-engine` so that users can find it in `npm`.
 
@@ -215,9 +199,9 @@ The object returned by the factory function can contain any of the following met
 * One or more of the following rendering methods:
     - `callback(loadedTemplate, templateData, callback)`
     - `stream(loadedTemplate, templateData) : <Stream>`
-    - `context(loadedTemplate, templateData, context)`
+    - `out(loadedTemplate, templateData, out)`
 
-Rendering methods that are not implemented will automatically be filled in by the `view-engine` module using one of the implemented methods. The `load(path)` method is optional, but if implemented it should return a loaded template that will be passed as the first argument to any of the rendering methods. If a `load(path)` method is not provided then the input path will be passed to the rendering methods.
+Rendering methods that are not implemented will automatically be filled in by the `view-engine` module using one of the implemented methods. The `load(path)` method is optional, but if implemented it should return a loaded template that will be passed as the first argument to any of the rendering methods. If a `load(path)` method is not provided then the data path will be passed to the rendering methods.
 
 Example implementation for the [jade](https://github.com/visionmedia/jade) templating language:
 ```javascript
@@ -238,8 +222,8 @@ module.exports = function create(config) {
 One of the motivations behind creating the `view-engine` module was to support the concept of building universal UI components that render HTML. The `view-engine` module allows UI components to be treated as a black box as far as rendering is concerned. That is, the user of the UI component renderer should not need to care how the renderer was implemented. Assuming every UI component renderer standardizes on the following method signature:
 
 ```javascript
-module.exports = function render(input, context) {
-    // Render HTML to the asynchronous render context based on the provided input
+module.exports = function render(data, out) {
+    // Render HTML to the asynchronous async writer based on the provided data
 }
 ```
 
@@ -248,17 +232,17 @@ The UI component can then be implemented using any supported templating engine o
 _Using no templating engine:_
 
 ```javascript
-module.exports = function render(input, context) {
-    context.write('Hello ' + input.name + '!');
+module.exports = function render(data, out) {
+    out.write('Hello ' + data.name + '!');
 }
 ```
 
-_Using Raptor Templates:_
+_Using Marko:_
 
 ```javascript
-var template = viewEngine.load(require.resolve('./foo.rhtml'));
-module.exports = function render(input, context) {
-    template.render({ name: input.name }, context);
+var template = viewEngine.load(require.resolve('./foo.marko'));
+module.exports = function render(data, out) {
+    template.render({ name: data.name }, out);
 }
 ```
 
@@ -266,8 +250,8 @@ _Using Dust:_
 
 ```javascript
 var template = viewEngine.load(require.resolve('./bar.dust'));
-module.exports = function render(input, context) {
-    template.render({ name: input.name }, context);
+module.exports = function render(data, out) {
+    template.render({ name: data.name }, out);
 }
 ```
 
@@ -275,16 +259,16 @@ With this approach, a UI component can even render its output asynchronously. Fo
 
 ```javascript
 var request = require('request');
-module.exports = function render(input, context) {
-    var asyncContext = context.beginAsync();
+module.exports = function render(data, out) {
+    var asyncOut = out.beginAsync();
     request('http://foo.com/some/service', function (error, response, body) {
         if (error) {
-            asyncContext.error(error);
+            asyncOut.error(error);
             return
         }
 
-        asyncContext.write(body); // Just write out the response verbatim...
-        asyncContext.end();
+        asyncOut.write(body); // Just write out the response verbatim...
+        asyncOut.end();
     });
 }
 ```

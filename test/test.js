@@ -17,12 +17,12 @@ describe('view-engine' , function() {
         done();
     });
 
-    it('should render a raptor template with a callback', function(done) {
+    it('should render a marko template with a callback', function(done) {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
-                'view-engine-raptor': {
-                    extensions: ['rhtml']
+                'view-engine-marko': {
+                    extensions: ['marko']
                 },
                 'view-engine-dust': {
                     extensions: ['dust']
@@ -30,7 +30,7 @@ describe('view-engine' , function() {
             }
         });
 
-        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
+        var template = viewEngine.load(require.resolve('./templates/hello.marko'));
 
         template.render(
             {
@@ -50,8 +50,8 @@ describe('view-engine' , function() {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
-                'view-engine-raptor': {
-                    extensions: ['rhtml']
+                'view-engine-marko': {
+                    extensions: ['marko']
                 },
                 'view-engine-dust': {
                     extensions: ['dust']
@@ -59,7 +59,7 @@ describe('view-engine' , function() {
             }
         });
 
-        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
+        var template = viewEngine.load(require.resolve('./templates/hello.marko'));
         var output = '';
         template.stream({
                 name: 'John'
@@ -78,8 +78,8 @@ describe('view-engine' , function() {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
-                'view-engine-raptor': {
-                    extensions: ['rhtml']
+                'view-engine-marko': {
+                    extensions: ['marko']
                 },
                 'view-engine-dust': {
                     extensions: ['dust']
@@ -98,21 +98,21 @@ describe('view-engine' , function() {
             }
         );
 
-        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
+        var template = viewEngine.load(require.resolve('./templates/hello.marko'));
         template.render({
                 name: 'John'
             }, outStream)
             .on('error', done);
     });
 
-    
 
-    it('should render a raptor template to a render context', function(done) {
+
+    it('should render a marko template to a render context', function(done) {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
-                'view-engine-raptor': {
-                    extensions: ['rhtml']
+                'view-engine-marko': {
+                    extensions: ['marko']
                 },
                 'view-engine-dust': {
                     extensions: ['dust']
@@ -120,8 +120,8 @@ describe('view-engine' , function() {
             }
         });
 
-        var template = viewEngine.load(require.resolve('./templates/hello.rhtml'));
-        var context = viewEngine.createRenderContext();
+        var template = viewEngine.load(require.resolve('./templates/hello.marko'));
+        var context = viewEngine.createWriter();
         template.render({
                 name: 'John'
             }, context)
@@ -138,8 +138,8 @@ describe('view-engine' , function() {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
-                'view-engine-raptor': {
-                    extensions: ['rhtml']
+                'view-engine-marko': {
+                    extensions: ['marko']
                 },
                 'view-engine-dust': {
                     extensions: ['dust']
@@ -167,8 +167,8 @@ describe('view-engine' , function() {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
-                'view-engine-raptor': {
-                    extensions: ['rhtml']
+                'view-engine-marko': {
+                    extensions: ['marko']
                 },
                 'view-engine-dust': {
                     extensions: ['dust']
@@ -191,14 +191,14 @@ describe('view-engine' , function() {
             .on('error', done);
     });
 
-    
+
 
     it('should render a Dust template to a render context', function(done) {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
-                'view-engine-raptor': {
-                    extensions: ['rhtml']
+                'view-engine-marko': {
+                    extensions: ['marko']
                 },
                 'view-engine-dust': {
                     extensions: ['dust']
@@ -207,7 +207,7 @@ describe('view-engine' , function() {
         });
 
         var template = viewEngine.load(require.resolve('./templates/hello.dust'));
-        var context = viewEngine.createRenderContext();
+        var context = viewEngine.createWriter();
         template.render({
                 name: 'John'
             }, context)
