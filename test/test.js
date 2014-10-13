@@ -3,7 +3,15 @@ var chai = require('chai');
 chai.Assertion.includeStack = true;
 require('chai').should();
 var expect = require('chai').expect;
-var path = require('path');
+var nodePath = require('path');
+var fs = require('fs');
+
+var buildDir = nodePath.join(__dirname, 'build');
+try {
+    fs.mkdirSync(buildDir);
+} catch(e) {
+    // Assume directory already exists
+}
 
 describe('view-engine' , function() {
 
@@ -107,7 +115,7 @@ describe('view-engine' , function() {
 
 
 
-    it('should render a marko template to a render context', function(done) {
+    it('should render a marko template to an async writer', function(done) {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
@@ -121,12 +129,12 @@ describe('view-engine' , function() {
         });
 
         var template = viewEngine.load(require.resolve('./templates/hello.marko'));
-        var context = viewEngine.createWriter();
+        var out = viewEngine.createWriter();
         template.render({
                 name: 'John'
-            }, context)
+            }, out)
             .on('end', function() {
-                expect(context.getOutput()).to.equal('Hello John!');
+                expect(out.getOutput()).to.equal('Hello John!');
                 done();
             })
             .on('error', done)
@@ -191,9 +199,7 @@ describe('view-engine' , function() {
             .on('error', done);
     });
 
-
-
-    it('should render a Dust template to a render context', function(done) {
+    it('should render a Dust template to an async writer', function(done) {
         var viewEngine = require('../');
         viewEngine.configure({
             engines: {
@@ -207,15 +213,44 @@ describe('view-engine' , function() {
         });
 
         var template = viewEngine.load(require.resolve('./templates/hello.dust'));
-        var context = viewEngine.createWriter();
+        var out = viewEngine.createWriter();
         template.render({
                 name: 'John'
-            }, context)
+            }, out)
             .on('end', function() {
-                expect(context.getOutput()).to.equal('Hello John!');
+                expect(out.getOutput()).to.equal('Hello John!');
                 done();
             })
             .end();
+    });
+
+    it('should render a Dust template to an existing writable stream', function(done) {
+        var viewEngine = require('../');
+        viewEngine.configure({
+            engines: {
+                'view-engine-marko': {
+                    extensions: ['marko']
+                },
+                'view-engine-dust': {
+                    extensions: ['dust']
+                }
+            }
+        });
+
+        var outFile = nodePath.join(buildDir, 'dust.txt');
+
+        var out = fs.createWriteStream(outFile, 'utf8');
+        out.on('close', function() {
+            var result = fs.readFileSync(outFile, 'utf8');
+            expect(result).to.equal('Hello John!');
+            done();
+        });
+
+        var template = viewEngine.load(require.resolve('./templates/hello.dust'));
+
+        template.render({
+                name: 'John'
+            }, out);
     });
 });
 
