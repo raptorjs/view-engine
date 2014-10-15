@@ -133,7 +133,7 @@ describe('view-engine' , function() {
         template.render({
                 name: 'John'
             }, out)
-            .on('end', function() {
+            .on('finish', function() {
                 expect(out.getOutput()).to.equal('Hello John!');
                 done();
             })
@@ -217,7 +217,7 @@ describe('view-engine' , function() {
         template.render({
                 name: 'John'
             }, out)
-            .on('end', function() {
+            .on('finish', function() {
                 expect(out.getOutput()).to.equal('Hello John!');
                 done();
             })
