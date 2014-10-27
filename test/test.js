@@ -252,5 +252,56 @@ describe('view-engine' , function() {
                 name: 'John'
             }, out);
     });
+
+    it('should render a Jade template to an existing writable stream', function(done) {
+        var viewEngine = require('../');
+        viewEngine.register('jade', require('./test-view-engine-jade'));
+
+        var outFile = nodePath.join(buildDir, 'jade.txt');
+
+        var out = fs.createWriteStream(outFile, 'utf8');
+        out.on('close', function() {
+            var result = fs.readFileSync(outFile, 'utf8');
+            expect(result).to.equal('Hello John!');
+            done();
+        });
+
+        var template = viewEngine.load(require.resolve('./templates/hello.jade'));
+
+        template.render({
+                name: 'John'
+            }, out);
+    });
+
+    it('should render a Jade template synchronously', function(done) {
+        var viewEngine = require('../');
+        viewEngine.register('jade', require('./test-view-engine-jade'));
+
+        var template = viewEngine.load(require.resolve('./templates/hello.jade'));
+
+        var result = template.renderSync({
+                name: 'John'
+            });
+        expect(result).to.equal('Hello John!');
+        done();
+    });
+
+    it('should render a Jade template assynchronously', function(done) {
+        var viewEngine = require('../');
+        viewEngine.register('jade', require('./test-view-engine-jade'));
+
+        var template = viewEngine.load(require.resolve('./templates/hello.jade'));
+
+        template.render({
+                name: 'John'
+            }, function(err, result) {
+                if (err) {
+                    return done(err);
+                }
+
+                expect(result).to.equal('Hello John!');
+                done();
+            });
+    });
 });
 
