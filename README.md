@@ -175,6 +175,7 @@ Below is a list of available view engines:
 
 * [Dust](https://github.com/linkedin/dustjs): [view-engine-dust](https://github.com/patrick-steele-idem/view-engine-dust)
 * [Handlebars](https://github.com/wycats/handlebars.js): [view-engine-handlebars](https://github.com/patrick-steele-idem/view-engine-handlebars)
+* [Jade](http://jade-lang.com/): [view-engine-jade](https://github.com/patrick-steele-idem/view-engine-jade)
 * [Marko](https://github.com/raptorjs3/marko): [view-engine-marko](https://github.com/patrick-steele-idem/view-engine-marko)
 
 If you create your own, please send a Pull Request so that it will show up on this page. Also, don't forget to tag your module with `view-engine` so that users can find it in `npm`.
