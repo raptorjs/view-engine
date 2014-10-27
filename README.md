@@ -40,6 +40,7 @@ Registering view engines:
 var viewEngine = require('view-engine');
 viewEngine.register('marko', require('view-engine-marko'));
 viewEngine.register('dust', require('view-engine-dust'));
+viewEngine.register('jade', require('view-engine-jade'));
 ```
 
 ## Template Rendering
