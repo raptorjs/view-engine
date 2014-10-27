@@ -1,42 +1,42 @@
 {
-  "name": "view-engine",
-  "description": "View resolver and rendering engine for Node.js and the browser",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/patrick-steele-idem/view-engine.git"
-  },
-  "main": "lib/view-engine.js",
-  "scripts": {
-    "test": "node_modules/.bin/mocha --ui bdd --reporter spec ./test && node_modules/.bin/jshint lib"
-  },
-  "keywords": [
-    "view",
-    "engine",
-    "template",
-    "rendering"
-  ],
-  "devDependencies": {
-    "chai": "~1.8.1",
-    "jade": "^1.7.0",
-    "jshint": "~2.3.0",
-    "mocha": "~1.15.1",
-    "through": "^2.3.4",
-    "view-engine-dust": "^1.0.0",
-    "view-engine-marko": "^1.0.0",
-    "write-file-atomic": "^1.1.0"
-  },
-  "author": "Patrick Steele-Idem <pnidem@gmail.com>",
-  "license": "Apache License v2.0",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
-  "dependencies": {
-    "raptor-util": "^1.0.0",
-    "raptor-strings": "^1.0.0",
-    "async-writer": "^1.1.0",
-    "chai": "^1.8.1",
-    "mocha": "^1.15.1",
-    "jshint": "^2.3.0"
-  },
-  "version": "1.0.3"
+    "name": "view-engine",
+    "description": "View resolver and rendering engine for Node.js and the browser",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/patrick-steele-idem/view-engine.git"
+    },
+    "main": "lib/view-engine.js",
+    "scripts": {
+        "test": "node_modules/.bin/mocha --ui bdd --reporter spec ./test && node_modules/.bin/jshint lib"
+    },
+    "keywords": [
+        "view",
+        "engine",
+        "template",
+        "rendering"
+    ],
+    "devDependencies": {
+        "chai": "~1.8.1",
+        "jade": "^1.7.0",
+        "jshint": "~2.3.0",
+        "mocha": "~1.15.1",
+        "through": "^2.3.4",
+        "view-engine-dust": "^1.0.0",
+        "view-engine-marko": "^1.0.0",
+        "write-file-atomic": "^1.1.0"
+    },
+    "author": "Patrick Steele-Idem <pnidem@gmail.com>",
+    "license": "Apache License v2.0",
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "dependencies": {
+        "raptor-util": "^1.0.0",
+        "raptor-strings": "^1.0.0",
+        "async-writer": "^1.1.0",
+        "chai": "^1.8.1",
+        "mocha": "^1.15.1",
+        "jshint": "^2.3.0"
+    },
+    "version": "1.0.4"
 }
