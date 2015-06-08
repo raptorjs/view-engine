@@ -17,7 +17,7 @@
     ],
     "devDependencies": {
         "chai": "~1.8.1",
-        "dustjs-linkedin": "^2.4.2",
+        "dustjs-linkedin": "~2.5.0",
         "jade": "^1.7.0",
         "jshint": "~2.3.0",
         "mocha": "~1.15.1",

@@ -9,11 +9,11 @@ var fs = require('fs');
 var buildDir = nodePath.join(__dirname, 'build');
 try {
     fs.mkdirSync(buildDir);
-} catch(e) {
+} catch (e) {
     // Assume directory already exists
 }
 
-describe('view-engine' , function() {
+describe('view-engine', function() {
 
     beforeEach(function(done) {
         // for (var k in require.cache) {
@@ -23,6 +23,15 @@ describe('view-engine' , function() {
         // }
 
         done();
+    });
+
+    after(function() {
+        /***
+         Unlink all the generated files, to make sure next test run will regenrate *.js files
+         ***/
+        fs.unlinkSync('./test/templates/hello.dust.js');
+        fs.unlinkSync('./test/templates/hello.marko.js');
+        fs.unlinkSync('./test/templates/hello.jade.js');
     });
 
     it('should render a marko template with a callback', function(done) {
@@ -40,8 +49,7 @@ describe('view-engine' , function() {
 
         var template = viewEngine.load(require.resolve('./templates/hello.marko'));
 
-        template.render(
-            {
+        template.render({
                 name: 'John'
             },
             function(err, data) {
@@ -157,8 +165,7 @@ describe('view-engine' , function() {
 
         var template = viewEngine.load(require.resolve('./templates/hello.dust'));
 
-        template.render(
-            {
+        template.render({
                 name: 'John'
             },
             function(err, data) {
@@ -249,8 +256,8 @@ describe('view-engine' , function() {
         var template = viewEngine.load(require.resolve('./templates/hello.dust'));
 
         template.render({
-                name: 'John'
-            }, out);
+            name: 'John'
+        }, out);
     });
 
     it('should render a Jade template to an existing writable stream', function(done) {
@@ -269,8 +276,8 @@ describe('view-engine' , function() {
         var template = viewEngine.load(require.resolve('./templates/hello.jade'));
 
         template.render({
-                name: 'John'
-            }, out);
+            name: 'John'
+        }, out);
     });
 
     it('should render a Jade template synchronously', function(done) {
@@ -280,8 +287,8 @@ describe('view-engine' , function() {
         var template = viewEngine.load(require.resolve('./templates/hello.jade'));
 
         var result = template.renderSync({
-                name: 'John'
-            });
+            name: 'John'
+        });
         expect(result).to.equal('Hello John!');
         done();
     });
@@ -293,15 +300,14 @@ describe('view-engine' , function() {
         var template = viewEngine.load(require.resolve('./templates/hello.jade'));
 
         template.render({
-                name: 'John'
-            }, function(err, result) {
-                if (err) {
-                    return done(err);
-                }
+            name: 'John'
+        }, function(err, result) {
+            if (err) {
+                return done(err);
+            }
 
-                expect(result).to.equal('Hello John!');
-                done();
-            });
+            expect(result).to.equal('Hello John!');
+            done();
+        });
     });
 });
-
